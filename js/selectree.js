@@ -6,7 +6,7 @@
     var defaultOptions = {
         width: 'auto',
         height: '300px',
-        isSimpleNode: false, //是否启用简单的节点属性（id,ame）,次配置是form表单传递到后台的参数值，数据通过json传递
+        isSimpleNode: true, //是否启用简单的节点属性（id,ame）,次配置是form表单传递到后台的参数值，数据通过json传递
         pIcon: '',
         cIcon: '',
         debug: false,
@@ -66,14 +66,14 @@
             //listener
             this.options.ztree.setting.callback = {
                 onCheck: function(event, treeId, treeNode) {
-                    return that._onCheckTreeCheck(event, treeId, treeNode);
+                    return that._onSelectTreeCheck(event, treeId, treeNode);
                 }
             }
             $.fn.zTree.init(that.$ztree, this.options.ztree.setting, this.options.ztree.data);
 
 
         },
-        _onCheckTreeCheck: function(event, treeId, treeNode) {
+        _onSelectTreeCheck: function(event, treeId, treeNode) {
             var that = this;
             //获得所有选中节点
             var pValue = '',
@@ -81,26 +81,28 @@
             var treeObj = $.fn.zTree.getZTreeObj(that.$ztree.attr('id'));
             if (treeObj) {
                 var nodes = treeObj.getCheckedNodes(true);
-                if(this.options.debug){
-                	console.log("选中的节点：");
-                	console.log(nodes);
+                if (this.options.debug) {
+                    console.log("选中的节点：");
+                    console.log(nodes);
                 }
                 for (var i = 0; i < nodes.length; i++) {
-                	if(nodes[i].isParent){
-                		text = text + nodes[i].name + '：';
-                	}else {
-                		text = text + nodes[i].name + ',';
-                	}
+                    if (nodes[i].isParent) {
+                        text = text + nodes[i].name + '：';
+                    } else {
+                        text = text + nodes[i].name + '，';
+                    }
                 }
                 if (this.options.isSimpleNode) {
                     nodes = common._transformToSimpleNodes(nodes);
                 }
-                if(this.options.debug){
-                	console.log("提交到表单到数据结构：");
-                	console.log(JSON.stringify(nodes));
+                if (this.options.debug) {
+                    console.log("提交到表单的数据结构：");
+                    console.log(JSON.stringify(nodes));
                 }
                 that.$pInput.val(JSON.stringify(nodes));
-                that.$element.val(text ? text.substr(0, text.length - 1) : '');
+                text = text ? text.substr(0, text.length - 1) : '';
+                that.$element.val(text);
+                that.$element.attr('title', text);
             }
         }
     }
@@ -128,12 +130,14 @@
                 }
             }
         },
-        //转换ztree几点为简单的节点，只包含id,name
+        //转换ztree为简单的节点，只包含id,name
         _transformToSimpleNodes: function(nodes) {
             var newNodes = [];
             if (nodes instanceof Array) {
                 for (var i = 0; i < nodes.length; i++) {
+                    var pNode = nodes[i].getParentNode();
                     var node = {};
+                    node.pId = pNode?pNode.id:null;
                     node.id = nodes[i].id;
                     node.name = nodes[i].name;
                     newNodes.push(node);

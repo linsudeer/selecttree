@@ -9,27 +9,23 @@ $(function() {
     }];
 
     $("#selectree").selectTree({
-    	isSimpleNode:true,
-    	debug:true,
+        isSimpleNode: true,
+        debug: true,
 
         data: [{
-                id: '11111',
-                name: "父节点324242",
-                children: [{ id: '22222', name: "子节点1" }, { id: '33333', name: "子节点2" }, {
-                    id: '11111',
-                    name: "父节点324242",
-                    children: [
-                        { id: '22222', name: "子节点1" },
-                        { id: '33333', name: "子节点2" }
-                    ]
-                }]
+                id: '1',
+                name: "父节点1",
+                children: [{ id: '1-1', name: "子节点1-1" },
+                    { id: '1-2', name: "子节点1-2" },
+                    { id: '1-3', name: "父节点1-3" }
+                ]
             },
             {
-                id: '77777',
-                name: "父节点324242",
+                id: '2',
+                name: "父节点2",
                 children: [
-                    { id: '88888', name: "子节点1" },
-                    { id: '99999', name: "子节点2" }
+                    { id: '2-1', name: "子节点2-1" },
+                    { id: '2-2', name: "子节点2-2" }
                 ]
             }
         ]
